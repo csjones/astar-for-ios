@@ -1,4 +1,4 @@
-astar-for-ios
-=============
+A* for iOS
+==========
 
-Simple NSDictionary Category for finding a path between two CGPoint keys
+Simple NSDictionary Category for finding a path between two CGPoints
