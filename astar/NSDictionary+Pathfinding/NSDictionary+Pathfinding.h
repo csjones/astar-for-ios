@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Chris. All rights reserved.
 //
 
-@interface NSDictionary (Pathfinding)
+@interface NSDictionary ( Pathfinding )
 
-- (NSArray*)keysForPathFromPoint:(CGPoint)start toPoint:(CGPoint)end passingTest:(BOOL (^)(id obj))test;
+- ( NSArray* )keysForPathFromPoint:( CGPoint )start toPoint:( CGPoint )end passingTest:( BOOL (^)( id obj ) )test;
 
 @end

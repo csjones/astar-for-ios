@@ -10,20 +10,20 @@
 
 #define Distance(pointOne, pointTwo) ( 10 * ( abs( pointOne.x - pointTwo.x ) + abs( pointOne.y - pointTwo.y ) ) )
 
-@implementation NSDictionary (Pathfinding)
+@implementation NSDictionary ( Pathfinding )
 
-- (NSArray*)keysForPathFromPoint:(CGPoint)start toPoint:(CGPoint)end passingTest:(BOOL (^)(id obj))test
+- ( NSArray* )keysForPathFromPoint:( CGPoint )start toPoint:( CGPoint )end passingTest:( BOOL (^)( id obj ) )test
 {
     NSDictionary        *current;
     
-    NSMutableDictionary *closed = [NSMutableDictionary dictionary];
+    NSMutableDictionary *closed = [[NSMutableDictionary alloc] init];
     
     NSValue             *empty = [NSValue valueWithCGPoint:CGPointMake(99, 99)];
     
-    NSMutableArray      *open = [NSMutableArray arrayWithObject:@{  @"distance" : [NSNumber numberWithInt:Distance(start,end)],
-                                                                    @"point" : [NSValue valueWithCGPoint:start],
-                                                                    @"previous" : empty,
-                                                                    @"walk" : @0, }];
+    NSMutableArray      *open = [[NSMutableArray alloc] initWithObjects:@{  @"distance" : [[NSNumber alloc] initWithInt:Distance(start,end)],
+                                                                            @"point" : [NSValue valueWithCGPoint:start],
+                                                                            @"previous" : empty,
+                                                                            @"walk" : @0, }, nil];
     
     while (open.count)
     {
@@ -31,7 +31,7 @@
         
         if ( CGPointEqualToPoint(end, [[current objectForKey:@"point"] CGPointValue]) )
         {
-            NSMutableArray *path = [NSMutableArray array];
+            NSMutableArray *path = [[NSMutableArray alloc] init];
             
             while ( ![empty isEqualToValue:[current objectForKey:@"previous"]] )
             {
@@ -50,13 +50,13 @@
         [closed setObject:current forKey:[current objectForKey:@"point"]];
         [open removeLastObject];
         
-        NSMutableArray *nearestNeighbors = [NSMutableArray array];
+        NSMutableArray *nearestNeighbors = [[NSMutableArray alloc] init];
         
-        id neighbor = [self objectForKey:[NSValue valueWithCGPoint:CGPointMake(currentPoint.x - 1, currentPoint.y)]];
+        __weak id neighbor = [self objectForKey:[NSValue valueWithCGPoint:CGPointMake(currentPoint.x - 1, currentPoint.y)]];
         
         if( neighbor && test( neighbor ) )
             [nearestNeighbors addObject:@{  @"previous" : [current objectForKey:@"point"],
-                                            @"walk" : [NSNumber numberWithInt:[[current objectForKey:@"walk"] intValue] + 10],
+                                            @"walk" : [[NSNumber alloc] initWithInt:[[current objectForKey:@"walk"] intValue] + 10],
                                             @"point" : [NSValue valueWithCGPoint:CGPointMake(currentPoint.x - 1, currentPoint.y)],
                                             @"distance" : [NSNumber numberWithInt:Distance(CGPointMake(currentPoint.x - 1, currentPoint.y),end)], }];
         
@@ -64,27 +64,27 @@
         
         if( neighbor && test( neighbor ) )
             [nearestNeighbors addObject:@{  @"previous" : [current objectForKey:@"point"],
-                                            @"walk" : [NSNumber numberWithInt:[[current objectForKey:@"walk"] intValue] + 10],
+                                            @"walk" : [[NSNumber alloc] initWithInt:[[current objectForKey:@"walk"] intValue] + 10],
                                             @"point" : [NSValue valueWithCGPoint:CGPointMake(currentPoint.x, currentPoint.y - 1)],
-                                            @"distance" : [NSNumber numberWithInt:Distance(CGPointMake(currentPoint.x, currentPoint.y - 1),end)], }];
+                                            @"distance" : [[NSNumber alloc] initWithInt:Distance(CGPointMake(currentPoint.x, currentPoint.y - 1),end)], }];
         
         neighbor = [self objectForKey:[NSValue valueWithCGPoint:CGPointMake(currentPoint.x + 1, currentPoint.y)]];
         
         if( neighbor && test( neighbor ) )
             [nearestNeighbors addObject:@{  @"previous" : [current objectForKey:@"point"],
-                                            @"walk" : [NSNumber numberWithInt:[[current objectForKey:@"walk"] intValue] + 10],
+                                            @"walk" : [[NSNumber alloc] initWithInt:[[current objectForKey:@"walk"] intValue] + 10],
                                             @"point" : [NSValue valueWithCGPoint:CGPointMake(currentPoint.x + 1, currentPoint.y)],
-                                            @"distance" : [NSNumber numberWithInt:Distance(CGPointMake(currentPoint.x + 1, currentPoint.y),end)], }];
+                                            @"distance" : [[NSNumber alloc] initWithInt:Distance(CGPointMake(currentPoint.x + 1, currentPoint.y),end)], }];
         
         neighbor = [self objectForKey:[NSValue valueWithCGPoint:CGPointMake(currentPoint.x, currentPoint.y + 1)]];
         
         if( neighbor && test( neighbor ) )
             [nearestNeighbors addObject:@{  @"previous" : [current objectForKey:@"point"],
-                                            @"walk" : [NSNumber numberWithInt:[[current objectForKey:@"walk"] intValue] + 10],
+                                            @"walk" : [[NSNumber alloc] initWithInt:[[current objectForKey:@"walk"] intValue] + 10],
                                             @"point" : [NSValue valueWithCGPoint:CGPointMake(currentPoint.x, currentPoint.y + 1)],
-                                            @"distance" : [NSNumber numberWithInt:Distance(CGPointMake(currentPoint.x, currentPoint.y + 1),end)], }];
+                                            @"distance" : [[NSNumber alloc] initWithInt:Distance(CGPointMake(currentPoint.x, currentPoint.y + 1),end)], }];
         
-        for (neighbor in nearestNeighbors)
+        for ( neighbor in nearestNeighbors )
         {
             NSDictionary *exists = [closed objectForKey:[neighbor objectForKey:@"point"]];
             
@@ -105,7 +105,7 @@
             }
         }
         
-        open = [NSMutableArray arrayWithArray:[open sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+        open = [[NSMutableArray alloc] initWithArray:[open sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
             return  ( [[a objectForKey:@"walk"] intValue] + [[a objectForKey:@"distance"] intValue] ) <
                     ( [[b objectForKey:@"walk"] intValue] + [[b objectForKey:@"distance"] intValue] );
         }]];
